@@ -1,5 +1,6 @@
 ﻿#include "Block.h"
 
+
 void Block::Draw()
 {
     DrawCube3D(
@@ -9,4 +10,38 @@ void Block::Draw()
         GetColor(255, 255, 255),
         FALSE
     );
+}
+
+bool Block::CheckHit(VECTOR playerPos)
+{
+    //プレイヤーの足元
+    float playerBottom = playerPos.y - 50;
+
+    if (
+        playerPos.x + 50 > minPos.x &&
+        playerPos.x - 50 < maxPos.x &&
+        playerPos.z + 50 > minPos.z &&
+        playerPos.z - 50 < maxPos.z &&
+        playerBottom < maxPos.z
+        )
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Block::CheckLanding(VECTOR playerPos)
+{
+    if (
+        playerPos.x + 50 > minPos.x &&
+        playerPos.x - 50 < maxPos.x &&
+        playerPos.y + 50 > minPos.y &&
+        playerPos.y - 50 < maxPos.y &&
+        playerPos.z + 50 > minPos.z &&
+        playerPos.z - 50 < maxPos.z
+        )
+    {
+        return true;
+    }
+    return false;
 }

@@ -14,4 +14,8 @@ public:
 
     //描画
     void Draw();
+
+    bool CheckHit(VECTOR playerPos);
+
+    bool CheckLanding(VECTOR playerPos);
 };

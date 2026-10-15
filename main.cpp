@@ -145,11 +145,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.x -= 5.0f;
 
             //ブロックに当たったら
-            if (CheckBlockHit(
-                cubePos,
-                block.minPos,
-                block.maxPos
-            ))
+            if (block.CheckHit(cubePos))
             {
                 //移動前の位置に戻す
                 cubePos.x = oldX;
@@ -166,11 +162,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.x += 5.0f;
 
             //ブロックに当たったら
-            if (CheckBlockHit(
-                cubePos,
-                block.minPos,
-                block.maxPos
-            ))
+            if (block.CheckHit(cubePos))
             {
                 //移動前の位置に戻す
                 cubePos.x = oldX;
@@ -187,11 +179,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.z += 5.0f;
 
             //ブロックに当たったら
-            if (CheckBlockHit(
-                cubePos,
-                block.minPos,
-                block.maxPos
-            ))
+            if (block.CheckHit(cubePos))
             {
                 //移動前の位置に戻す
                 cubePos.z = oldZ;
@@ -208,11 +196,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.z -= 5.0f;
 
             //ブロックに当たったら
-            if (CheckBlockHit(
-                cubePos,
-                block.minPos,
-                block.maxPos
-            ))
+            if (block.CheckHit(cubePos))
             {
                 //移動前の位置に戻す
                 cubePos.z = oldZ;
@@ -250,64 +234,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             isJump = false;
         }
 
-
-
-        //壁判定
-        if (
-            cubePos.x + 50 > 100 &&
-            cubePos.x - 50 < 200 &&
-            cubePos.y + 50 > -50 &&
-            cubePos.y - 50 < 50 &&
-            cubePos.z + 50 > -50 &&
-            cubePos.z - 50 < 50
-            )
-        {
-            cubePos.x = oldPos.x;
-        }
-
-        /*if (cubePos.x > 100 &&
-            cubePos.x < 200 &&
-            cubePos.z > -50 &&
-            cubePos.z < 50)
-        {
-            if (cubePos.y <= 100 &&
-                cubePos.y >= 50)
-            {
-                cubePos.y = 100;
-                jumpPower = 0.0f;
-                isJump = false;
-            }
-        }*/
-
         //右キューブ当たり判定
         //右ブロックの上にいるか
-        if (
-            cubePos.x + 50 > block.minPos.x &&
-            cubePos.x - 50 < block.maxPos.x &&
-            cubePos.z + 50 > block.minPos.z &&
-            cubePos.z - 50 < block.maxPos.z
-            )
-        {
-            //上から落ちてきたか
-            if (oldY - 50 > 50 &&
-                cubePos.y - 50 <= 50)
-            {
-                cubePos.y = 100;
+        //if (
+        //    cubePos.x + 50 > block.minPos.x &&
+        //    cubePos.x - 50 < block.maxPos.x &&
+        //    cubePos.z + 50 > block.minPos.z &&
+        //    cubePos.z - 50 < block.maxPos.z
+        //    )
+        //{
+        //    //上から落ちてきたか
+        //    if (oldY - 50 > 50 &&
+        //        cubePos.y - 50 <= 50)
+        //    {
+        //        cubePos.y = 100;
 
-                jumpPower = 0.0f;
+        //        jumpPower = 0.0f;
 
-                isJump = false;
+        //        isJump = false;
 
-                onBlock = true;
-            }
-        }
+        //        onBlock = true;
+        //    }
+        //}
 
         //ブロックの上に立っている
-        if (CheckLanding(
-            cubePos,
-            block.minPos,
-            block.maxPos
-        ))
+        if (block.CheckLanding(cubePos))
         {
             cubePos.y = block.maxPos.y + 50;
 
