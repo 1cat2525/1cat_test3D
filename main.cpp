@@ -35,10 +35,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //Cameraクラスからカメラという実体を作っている
     Camera camera;
 
-    Block block;
+    //==========================================
+    //配列の用意とか！
+    //==========================================
+    Block blocks[2];
 
-    block.minPos = VGet(100, -50, -50);
-    block.maxPos = VGet(200, 50, 50);
+    //１個目
+    blocks[0].minPos = VGet(100, -50, -50);
+    blocks[0].maxPos = VGet(200, 50, 50);
+
+    //２個目
+    blocks[1].minPos = VGet(-200, 50, -50);
+    blocks[1].maxPos = VGet(-100, 150, 50);
+
+
 
     // ライト計算を無効にする
     SetUseLighting(FALSE);
@@ -115,21 +125,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             TRUE
         );
         
-        
-
-        //右のキューブ
-        block.Draw();
-
-        //左のキューブ
-        DrawCube3D(
-            VGet(-200, 50, -50),
-            VGet(-100, 150, 50),
-            GetColor(0, 255, 0),
-            GetColor(255, 255, 255),
-            FALSE
-        );
-
-        
+        //用意した配列のブロックの自動描写
+        for (int i = 0; i < 2; i++)
+        {
+            blocks[i].Draw();
+        }
 
 
         // --------------------------------------
@@ -145,9 +145,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.x -= 5.0f;
 
             //ブロックに当たったら
-            if (block.CheckHit(cubePos))
+            bool hit = false;
+
+            for (int i = 0; i < 2; i++)
             {
-                //移動前の位置に戻す
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                }
+            }
+
+            if (hit)
+            {
                 cubePos.x = oldX;
             }
         }
@@ -162,9 +171,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.x += 5.0f;
 
             //ブロックに当たったら
-            if (block.CheckHit(cubePos))
+            bool hit = false;
+
+            for (int i = 0; i < 2; i++)
             {
-                //移動前の位置に戻す
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                }
+            }
+
+            if (hit)
+            {
                 cubePos.x = oldX;
             }
         }
@@ -179,9 +197,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.z += 5.0f;
 
             //ブロックに当たったら
-            if (block.CheckHit(cubePos))
+            bool hit = false;
+
+            for (int i = 0; i < 2; i++)
             {
-                //移動前の位置に戻す
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                }
+            }
+
+            if (hit)
+            {
                 cubePos.z = oldZ;
             }
         }
@@ -196,9 +223,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.z -= 5.0f;
 
             //ブロックに当たったら
-            if (block.CheckHit(cubePos))
+            bool hit = false;
+
+            for (int i = 0; i < 2; i++)
             {
-                //移動前の位置に戻す
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                }
+            }
+
+            if (hit)
+            {
                 cubePos.z = oldZ;
             }
         }
@@ -258,15 +294,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //}
 
         //ブロックの上に立っている
-        if (block.CheckLanding(cubePos))
+        for (int i = 0; i < 2; i++)
         {
-            cubePos.y = block.maxPos.y + 50;
+            if (blocks[i].CheckLanding(cubePos))
+            {
+                cubePos.y = blocks[i].maxPos.y + 50;
 
-            jumpPower = 0.0f;
-
-            onBlock = true;
-
-            isJump = false;
+                jumpPower = 0.0f;
+                onBlock = true;
+                isJump = false;
+            }
         }
 
         //デバッグ、座標の表示とか
