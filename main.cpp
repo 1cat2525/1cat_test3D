@@ -4,11 +4,12 @@
 #include "FpsControll.h"
 #include "Block.h"
 
-// Windowsアプリの開始地点
+//Windowsアプリの開始地点
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-    // ウィンドウモードで起動
-    // TRUE = フルスクリーンではなくウィンドウ表示
+    //ウィンドウモードで起動
+    //TRUE = フルスクリーンではなくウィンドウ表示
+    //FALSE = フルスクリーン表示
     ChangeWindowMode(TRUE);
 
     // DXライブラリの初期化
@@ -38,7 +39,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //==========================================
     //配列の用意とか！
     //==========================================
-    Block blocks[2];
+    const int BLOCK_NUM = 2;
+
+    Block blocks[BLOCK_NUM];
 
     //１個目
     blocks[0].minPos = VGet(100, -50, -50);
@@ -50,13 +53,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-    // ライト計算を無効にする
+    //ライト計算を無効にする
     SetUseLighting(FALSE);
 
-    // ==========================================
-    // メインループ
-    // ×ボタンが押されるまで繰り返す
-    // ==========================================
+    //==========================================
+    //メインループ
+    //×ボタンが押されるまで繰り返す
+    //==========================================
     while (ProcessMessage() == 0)
     {
         onBlock = false;
@@ -64,7 +67,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //移動前の位置を保存
         VECTOR oldPos = cubePos;
 
-        // 前のフレームの描画を消す
+        //前のフレームの描画を消す
         ClearDrawScreen();
 
         // --------------------------------------
@@ -78,14 +81,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //    GetColor(255, 255, 255)   // 白色
         //);
 
-        // --------------------------------------
-        // カメラの設定
-        // --------------------------------------
+        //--------------------------------------
+        //カメラの設定
+        //--------------------------------------
         camera.Update(cubePos);
        
-        // --------------------------------------
-        // 3Dキューブを描画
-        // --------------------------------------
+        //--------------------------------------
+        //3Dキューブを描画
+        //--------------------------------------
 
         //DrawCube3D(
 
@@ -126,16 +129,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         );
         
         //用意した配列のブロックの自動描写
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < BLOCK_NUM; i++)
         {
             blocks[i].Draw();
         }
 
 
-        // --------------------------------------
-        // キー入力と移動
-        // --------------------------------------
-        // Aキーで左
+        //--------------------------------------
+        //キー入力と移動
+        //--------------------------------------
+        //Aキーで左
         if (CheckHitKey(KEY_INPUT_A))
         {
             //移動先のx座標を保存
@@ -147,7 +150,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             //ブロックに当たったら
             bool hit = false;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < BLOCK_NUM; i++)
             {
                 if (blocks[i].CheckHit(cubePos))
                 {
@@ -161,7 +164,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
         }
 
-        // Dキーで右
+        //Dキーで右
         if (CheckHitKey(KEY_INPUT_D))
         {
             //移動先のx座標を保存
@@ -173,7 +176,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             //ブロックに当たったら
             bool hit = false;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < BLOCK_NUM; i++)
             {
                 if (blocks[i].CheckHit(cubePos))
                 {
@@ -187,7 +190,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
         }
 
-        // Wキーで前
+        //Wキーで前
         if (CheckHitKey(KEY_INPUT_W))
         {
             //移動先のx座標を保存
@@ -199,7 +202,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             //ブロックに当たったら
             bool hit = false;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < BLOCK_NUM; i++)
             {
                 if (blocks[i].CheckHit(cubePos))
                 {
@@ -213,7 +216,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
         }
 
-        // Sキーで後ろ
+        //Sキーで後ろ
         if (CheckHitKey(KEY_INPUT_S))
         {
             //移動先のx座標を保存
@@ -225,7 +228,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             //ブロックに当たったら
             bool hit = false;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < BLOCK_NUM; i++)
             {
                 if (blocks[i].CheckHit(cubePos))
                 {
@@ -294,14 +297,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //}
 
         //ブロックの上に立っている
-        for (int i = 0; i < 2; i++)
+        //iの上限かえればその分の当たり判定を管理できる
+        for (int i = 0; i < BLOCK_NUM; i++)
         {
-            if (blocks[i].CheckLanding(cubePos))
+            if (blocks[i].CheckLanding(cubePos, oldY))
             {
                 cubePos.y = blocks[i].maxPos.y + 50;
 
                 jumpPower = 0.0f;
+
                 onBlock = true;
+
                 isJump = false;
             }
         }
@@ -340,7 +346,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         FpsControll_Wait();
     }
 
-    // DXライブラリ終了
+    //DXライブラリ終了
     DxLib_End();
 
     return 0;

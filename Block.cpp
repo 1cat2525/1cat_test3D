@@ -30,18 +30,21 @@ bool Block::CheckHit(VECTOR playerPos)
     return false;
 }
 
-bool Block::CheckLanding(VECTOR playerPos)
+bool Block::CheckLanding(VECTOR playerPos, float oldY)
 {
+    float blockTop = maxPos.y;
+
     if (
         playerPos.x + 50 > minPos.x &&
         playerPos.x - 50 < maxPos.x &&
-        playerPos.y + 50 > minPos.y &&
-        playerPos.y - 50 < maxPos.y &&
         playerPos.z + 50 > minPos.z &&
-        playerPos.z - 50 < maxPos.z
+        playerPos.z - 50 < maxPos.z &&
+        oldY - 50 > blockTop &&
+        playerPos.y - 50 <= blockTop
         )
     {
         return true;
     }
+
     return false;
 }

@@ -17,5 +17,9 @@ public:
 
     bool CheckHit(VECTOR playerPos);
 
-    bool CheckLanding(VECTOR playerPos);
+    bool CheckLanding
+    (
+        VECTOR playerPos,
+        float oldY
+    );
 };
