@@ -281,7 +281,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //    cubePos.z + 50 > block.minPos.z &&
         //    cubePos.z - 50 < block.maxPos.z
         //    )
-        //{
+        //{aaaaaaaa
         //    //上から落ちてきたか
         //    if (oldY - 50 > 50 &&
         //        cubePos.y - 50 <= 50)
@@ -312,8 +312,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
         }
 
+        //ブロックの上に立っている判定。
+        //ブロックの上に乗ってもすり抜けない
+        for (int i = 0; i < BLOCK_NUM; i++)
+        {
+            if (
+                cubePos.x + 50 > blocks[i].minPos.x &&
+                cubePos.x - 50 < blocks[i].maxPos.x &&
+                cubePos.z + 50 > blocks[i].minPos.z &&
+                cubePos.z - 50 < blocks[i].maxPos.z &&
+                cubePos.y <= blocks[i].maxPos.y + 50 &&
+                cubePos.y >= blocks[i].maxPos.y + 45
+                )
+            {
+                cubePos.y = blocks[i].maxPos.y + 50;
+
+                jumpPower = 0.0f;
+
+                onBlock = true;
+
+                isJump = false;
+            }
+        }
+
         //デバッグ、座標の表示とか
-        /*DrawFormatString(
+        DrawFormatString(
             10,
             30,
             GetColor(255, 255, 255),
@@ -322,6 +345,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.y,
             cubePos.z
         );
+
+        /*
         DrawFormatString(
             10,
             50,

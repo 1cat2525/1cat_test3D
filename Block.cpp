@@ -22,7 +22,7 @@ bool Block::CheckHit(VECTOR playerPos)
         playerPos.x - 50 < maxPos.x &&
         playerPos.z + 50 > minPos.z &&
         playerPos.z - 50 < maxPos.z &&
-        playerBottom < maxPos.z
+        playerBottom < maxPos.y
         )
     {
         return true;
