@@ -3,6 +3,7 @@
 #include "Physics.h"
 #include "FpsControll.h"
 #include "Block.h"
+#include <cmath>
 
 //Windowsアプリの開始地点
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -143,9 +144,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         {
             //移動先のx座標を保存
             float oldX = cubePos.x;
+            float oldZ = cubePos.z;
 
             //右へ移動
-            cubePos.x -= 5.0f;
+            cubePos.x -= cosf(camera.angleY) * 5.0f;
+            cubePos.z -= sinf(camera.angleY) * 5.0f;
 
             //ブロックに当たったら
             bool hit = false;
@@ -161,6 +164,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             if (hit)
             {
                 cubePos.x = oldX;
+                cubePos.z = oldZ;
             }
         }
 
@@ -169,9 +173,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         {
             //移動先のx座標を保存
             float oldX = cubePos.x;
+            float oldZ = cubePos.z;
 
             //右へ移動
-            cubePos.x += 5.0f;
+            cubePos.x += cosf(camera.angleY) * 5.0f;
+            cubePos.z += sinf(camera.angleY) * 5.0f;
 
             //ブロックに当たったら
             bool hit = false;
@@ -187,6 +193,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             if (hit)
             {
                 cubePos.x = oldX;
+                cubePos.z = oldZ;
             }
         }
 
@@ -194,10 +201,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         if (CheckHitKey(KEY_INPUT_W))
         {
             //移動先のx座標を保存
+            float oldX = cubePos.x;
             float oldZ = cubePos.z;
 
             //前に移動
-            cubePos.z += 5.0f;
+            cubePos.x -= sinf(camera.angleY) * 5.0f;
+            cubePos.z += cosf(camera.angleY) * 5.0f;
 
             //ブロックに当たったら
             bool hit = false;
@@ -212,6 +221,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
+                cubePos.x = oldX;
                 cubePos.z = oldZ;
             }
         }
@@ -220,10 +230,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         if (CheckHitKey(KEY_INPUT_S))
         {
             //移動先のx座標を保存
+            float oldX = cubePos.x;
             float oldZ = cubePos.z;
 
             //手前に移動
-            cubePos.z -= 5.0f;
+            cubePos.x += sinf(camera.angleY) * 5.0f;
+            cubePos.z -= cosf(camera.angleY) * 5.0f;
 
             //ブロックに当たったら
             bool hit = false;
@@ -238,6 +250,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
+                cubePos.x = oldX;
                 cubePos.z = oldZ;
             }
         }
