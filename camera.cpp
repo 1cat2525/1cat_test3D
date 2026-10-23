@@ -8,23 +8,14 @@ void Camera::Update(VECTOR targetPos)
 
     GetMousePoint(&mouseX, &mouseY);
 
-    //マウス移動量
-    int moveX = mouseX - oldMouseX;
+    int moveX = mouseX - 640;
+    int moveY = mouseY - 360;
 
-    //横回転
     angleY -= moveX * 0.01f;
-
-    //今回のX位置を保存
-    oldMouseX = mouseX;
-
-    //マウス移動量(上下のほう)
-    int moveY = mouseY - oldMouseY;
-
-    //上下回転
     angleX += moveY * 0.01f;
 
-    //今回のY位置を保存
-    oldMouseY = mouseY;
+    //毎フレーム中央へ戻す
+    SetMousePoint(640, 360);
 
     float distance = 500.0f;
 

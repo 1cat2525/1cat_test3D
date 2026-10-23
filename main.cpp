@@ -20,6 +20,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         return -1;
     }
 
+    SetMouseDispFlag(FALSE);
+
+    SetMousePoint(640, 360);
+
     FpsControll_Initialize();
 
     //キューブの中心座標
@@ -40,19 +44,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //==========================================
     //配列の用意とか！
     //==========================================
-    const int BLOCK_NUM = 2;
+    const int BLOCK_NUM = 3;
 
     Block blocks[BLOCK_NUM];
 
-    //１個目
+    //1個目
     blocks[0].minPos = VGet(100, -50, -50);
     blocks[0].maxPos = VGet(200, 50, 50);
 
-    //２個目
+    //2個目
     blocks[1].minPos = VGet(-200, 50, -50);
     blocks[1].maxPos = VGet(-100, 150, 50);
 
-
+    //3個目
+    blocks[2].minPos = VGet(-200, 150, 200);
+    blocks[2].maxPos = VGet(-100, 250, 300);
 
     //ライト計算を無効にする
     SetUseLighting(FALSE);
@@ -139,18 +145,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //--------------------------------------
         //キー入力と移動
         //--------------------------------------
-        //Aキーで左
-        if (CheckHitKey(KEY_INPUT_A))
+        //Wキーで前
+        if (CheckHitKey(KEY_INPUT_W))
         {
+            //X、Zの移動量
+            float moveX =
+                -sinf(camera.angleY) * 5.0f;
+
+            float moveZ =
+                cosf(camera.angleY) * 5.0f;
+
             //移動先のx座標を保存
             float oldX = cubePos.x;
-            float oldZ = cubePos.z;
 
-            //右へ移動
-            cubePos.x -= cosf(camera.angleY) * 5.0f;
-            cubePos.z -= sinf(camera.angleY) * 5.0f;
+            cubePos.x += moveX;
 
-            //ブロックに当たったら
             bool hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
@@ -158,12 +167,139 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                 if (blocks[i].CheckHit(cubePos))
                 {
                     hit = true;
+                    break;
                 }
             }
 
             if (hit)
             {
                 cubePos.x = oldX;
+            }
+
+            //移動先のz座標を保存
+            float oldZ = cubePos.z;
+
+            cubePos.z += moveZ;
+
+            hit = false;
+
+            for (int i = 0; i < BLOCK_NUM; i++)
+            {
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                    break;
+                }
+            }
+
+            if (hit)
+            {
+                cubePos.z = oldZ;
+            }
+        }
+
+        //Aキーで左
+        if (CheckHitKey(KEY_INPUT_A))
+        {
+            //X、Zの移動量
+            float moveX =
+                -cosf(camera.angleY) * 5.0f;
+
+            float moveZ =
+                -sinf(camera.angleY) * 5.0f;
+
+            //移動先のx座標を保存
+            float oldX = cubePos.x;
+
+            cubePos.x += moveX;
+
+            bool hit = false;
+
+            for (int i = 0; i < BLOCK_NUM; i++)
+            {
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                    break;
+                }
+            }
+
+            if (hit)
+            {
+                cubePos.x = oldX;
+            }
+
+            //移動先のz座標を保存
+            float oldZ = cubePos.z;
+
+            cubePos.z += moveZ;
+
+            hit = false;
+
+            for (int i = 0; i < BLOCK_NUM; i++)
+            {
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                    break;
+                }
+            }
+
+            if (hit)
+            {
+                cubePos.z = oldZ;
+            }
+        } 
+
+        //Sキーで後ろ
+        if (CheckHitKey(KEY_INPUT_S))
+        {
+            //X、Zの移動量
+            float moveX =
+                sinf(camera.angleY) * 5.0f;
+
+            float moveZ =
+                -cosf(camera.angleY) * 5.0f;
+
+            //移動先のx座標を保存
+            float oldX = cubePos.x;
+
+            cubePos.x += moveX;
+
+            bool hit = false;
+
+            for (int i = 0; i < BLOCK_NUM; i++)
+            {
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                    break;
+                }
+            }
+
+            if (hit)
+            {
+                cubePos.x = oldX;
+            }
+
+            //移動先のz座標を保存
+            float oldZ = cubePos.z;
+
+            cubePos.z += moveZ;
+
+            hit = false;
+
+            for (int i = 0; i < BLOCK_NUM; i++)
+            {
+                if (blocks[i].CheckHit(cubePos))
+                {
+                    hit = true;
+                    break;
+                }
+            }
+
+            if (hit)
+            {
                 cubePos.z = oldZ;
             }
         }
@@ -171,15 +307,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //Dキーで右
         if (CheckHitKey(KEY_INPUT_D))
         {
+            //X、Zの移動量
+            float moveX =
+                cosf(camera.angleY) * 5.0f;
+
+            float moveZ =
+                sinf(camera.angleY) * 5.0f;
+
             //移動先のx座標を保存
             float oldX = cubePos.x;
-            float oldZ = cubePos.z;
 
-            //右へ移動
-            cubePos.x += cosf(camera.angleY) * 5.0f;
-            cubePos.z += sinf(camera.angleY) * 5.0f;
+            cubePos.x += moveX;
 
-            //ブロックに当たったら
             bool hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
@@ -187,73 +326,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                 if (blocks[i].CheckHit(cubePos))
                 {
                     hit = true;
+                    break;
                 }
             }
 
             if (hit)
             {
                 cubePos.x = oldX;
-                cubePos.z = oldZ;
             }
-        }
 
-        //Wキーで前
-        if (CheckHitKey(KEY_INPUT_W))
-        {
-            //移動先のx座標を保存
-            float oldX = cubePos.x;
+            //移動先のz座標を保存
             float oldZ = cubePos.z;
 
-            //前に移動
-            cubePos.x -= sinf(camera.angleY) * 5.0f;
-            cubePos.z += cosf(camera.angleY) * 5.0f;
+            cubePos.z += moveZ;
 
-            //ブロックに当たったら
-            bool hit = false;
+            hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
                 if (blocks[i].CheckHit(cubePos))
                 {
                     hit = true;
+                    break;
                 }
             }
 
             if (hit)
             {
-                cubePos.x = oldX;
                 cubePos.z = oldZ;
             }
         }
 
-        //Sキーで後ろ
-        if (CheckHitKey(KEY_INPUT_S))
-        {
-            //移動先のx座標を保存
-            float oldX = cubePos.x;
-            float oldZ = cubePos.z;
-
-            //手前に移動
-            cubePos.x += sinf(camera.angleY) * 5.0f;
-            cubePos.z -= cosf(camera.angleY) * 5.0f;
-
-            //ブロックに当たったら
-            bool hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(cubePos))
-                {
-                    hit = true;
-                }
-            }
-
-            if (hit)
-            {
-                cubePos.x = oldX;
-                cubePos.z = oldZ;
-            }
-        }
 
         //ジャンプしていない時だけジャンプ開始
         if (CheckHitKey(KEY_INPUT_SPACE) && isJump == false)
