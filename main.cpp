@@ -357,16 +357,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
         }
 
+        //デバッグ
+        DrawFormatString(
+            10,
+            130,
+            GetColor(255, 255, 255),
+            "onBlock=%d",
+            onBlock
+        );
 
-        //ジャンプしていない時だけジャンプ開始
-        if (CheckHitKey(KEY_INPUT_SPACE) && isJump == false)
-        {
-            jumpPower = 15.0f;
+        
 
-            isJump = true;
-        }
-
-        //ジャンプ中の処理
+        //ジャンプ中の処理　
         //y座標の保存
         float oldY = cubePos.y;
         //上向きの勢いで移動
@@ -449,6 +451,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
                 isJump = false;
             }
+        }
+
+        //ジャンプしていない時だけジャンプ開始
+        if (CheckHitKey(KEY_INPUT_SPACE) && (cubePos.y == 0.0f || onBlock))
+        {
+            jumpPower = 20.0f;
+
+            isJump = true;
         }
 
         //デバッグ、座標の表示とか
