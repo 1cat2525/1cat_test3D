@@ -22,4 +22,10 @@ public:
         VECTOR playerPos,
         float oldY
     );
+
+    bool CheckCeiling
+    (
+        VECTOR playerPos,
+        float oldY
+    );
 };

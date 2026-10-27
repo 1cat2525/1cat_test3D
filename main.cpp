@@ -41,10 +41,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //Cameraクラスからカメラという実体を作っている
     Camera camera;
 
+    //プレイヤーの向き
+    float playerAngle = 0.0f;
+
+    float targetAngle = 0.0f;
+    
     //==========================================
     //配列の用意とか！
     //==========================================
-    const int BLOCK_NUM = 3;
+    const int BLOCK_NUM = 4;
 
     Block blocks[BLOCK_NUM];
 
@@ -59,6 +64,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //3個目
     blocks[2].minPos = VGet(-200, 150, 200);
     blocks[2].maxPos = VGet(-100, 250, 300);
+
+    //4個目
+    blocks[3].minPos = VGet(100, 250, 200);
+    blocks[3].maxPos = VGet(200, 350, 300);
 
     //ライト計算を無効にする
     SetUseLighting(FALSE);
@@ -155,6 +164,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             float moveZ =
                 cosf(camera.angleY) * 5.0f;
 
+            playerAngle = camera.angleY;
+
             //移動先のx座標を保存
             float oldX = cubePos.x;
 
@@ -207,6 +218,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             float moveZ =
                 -sinf(camera.angleY) * 5.0f;
+
+            playerAngle = camera.angleY - DX_PI_F / 2.0f;
+
 
             //移動先のx座標を保存
             float oldX = cubePos.x;
@@ -261,6 +275,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             float moveZ =
                 -cosf(camera.angleY) * 5.0f;
 
+            playerAngle = camera.angleY + DX_PI_F;
+
             //移動先のx座標を保存
             float oldX = cubePos.x;
 
@@ -313,6 +329,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             float moveZ =
                 sinf(camera.angleY) * 5.0f;
+
+            playerAngle = camera.angleY + DX_PI_F / 2.0f;
 
             //移動先のx座標を保存
             float oldX = cubePos.x;
@@ -391,6 +409,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             isJump = false;
         }
 
+        //天井判定のこと
+        for (int i = 0; i < BLOCK_NUM; i++)
+        {
+            if (blocks[i].CheckCeiling(
+                cubePos,
+                oldY
+            ))
+            {
+                //ブロックの下面へ押し戻す
+                cubePos.y = blocks[i].minPos.y - 50;
+
+                //上昇停止
+                jumpPower = 0.0f;
+            }
+        }
+
         //右キューブ当たり判定
         //右ブロックの上にいるか
         //if (
@@ -456,7 +490,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //ジャンプしていない時だけジャンプ開始
         if (CheckHitKey(KEY_INPUT_SPACE) && (cubePos.y == 0.0f || onBlock))
         {
-            jumpPower = 20.0f;
+            jumpPower = 13.5f;
 
             isJump = true;
         }
@@ -502,3 +536,4 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     return 0;
 }
+

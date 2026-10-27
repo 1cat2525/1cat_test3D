@@ -14,7 +14,8 @@ void Block::Draw()
 
 bool Block::CheckHit(VECTOR playerPos)
 {
-    //プレイヤーの足元
+    //プレイヤーの頭と下
+    float playerTop = playerPos.y + 50;
     float playerBottom = playerPos.y - 50;
 
     if (
@@ -22,6 +23,7 @@ bool Block::CheckHit(VECTOR playerPos)
         playerPos.x - 50 < maxPos.x &&
         playerPos.z + 50 > minPos.z &&
         playerPos.z - 50 < maxPos.z &&
+        playerTop > minPos.y &&
         playerBottom < maxPos.y
         )
     {
@@ -45,6 +47,34 @@ bool Block::CheckLanding(VECTOR playerPos, float oldY)
     {
         return true;
     }
+
+    return false;
+}
+
+bool Block::CheckCeiling(VECTOR playerPos,float oldY)
+{
+    float blockBottom = minPos.y;
+
+
+    if (
+        playerPos.x + 49.9 > minPos.x &&
+        playerPos.x - 49.9 < maxPos.x &&
+        playerPos.z + 49.9 > minPos.z &&
+        playerPos.z - 49.9 < maxPos.z &&
+        oldY + 49.9 < blockBottom &&
+        playerPos.y + 49.9 >= blockBottom
+        )
+    {
+        return true;
+    }
+
+    //デバッグよう
+    DrawString(
+        10,
+        150,
+        "CEILING HIT",
+        GetColor(255, 255, 0)
+    );
 
     return false;
 }
