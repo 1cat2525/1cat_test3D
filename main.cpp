@@ -29,10 +29,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //キューブの中心座標
     VECTOR cubePos = VGet(0, 0, 0);
 
-    //ジャンプの勢い
+    //ジャンプの勢い、強さ
     float jumpPower = 0.0f;
 
-    //ジャンプ中か判定する
+    //ジャンプ中か判定
     bool isJump = false;
 
     //ブロックに乗っているか判定
@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     //Cameraクラスからカメラという実体を作っている
     Camera camera;
-
+    
     //プレイヤーの向き
     float playerAngle = 0.0f;
 
@@ -157,6 +157,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //Wキーで前
         if (CheckHitKey(KEY_INPUT_W))
         {
+            targetAngle = camera.angleY;
+
             //X、Zの移動量
             float moveX =
                 -sinf(camera.angleY) * 5.0f;
@@ -212,6 +214,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //Aキーで左
         if (CheckHitKey(KEY_INPUT_A))
         {
+            targetAngle = camera.angleY - DX_PI_F / 2.0f;
+
             //X、Zの移動量
             float moveX =
                 -cosf(camera.angleY) * 5.0f;
@@ -268,6 +272,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //Sキーで後ろ
         if (CheckHitKey(KEY_INPUT_S))
         {
+            targetAngle = camera.angleY + DX_PI_F;
+
             //X、Zの移動量
             float moveX =
                 sinf(camera.angleY) * 5.0f;
@@ -323,6 +329,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //Dキーで右
         if (CheckHitKey(KEY_INPUT_D))
         {
+            targetAngle = camera.angleY + DX_PI_F / 2.0f;
+
             //X、Zの移動量
             float moveX =
                 cosf(camera.angleY) * 5.0f;
@@ -495,6 +503,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             isJump = true;
         }
 
+        //体の向きかも
+        float rotateSpeed = 0.1f;
+
+        if (playerAngle < targetAngle)
+        {
+            playerAngle += rotateSpeed;
+        }
+
+        if (playerAngle > targetAngle)
+        {
+            playerAngle -= rotateSpeed;
+        }
+
         //デバッグ、座標の表示とか
         DrawFormatString(
             10,
@@ -505,6 +526,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             cubePos.y,
             cubePos.z
         );
+
+        DrawFormatString(
+            10,
+            190,
+            GetColor(255, 255, 255),
+            "PlayerAngle=%.2f",
+            playerAngle
+        );
+
 
         /*
         DrawFormatString(
