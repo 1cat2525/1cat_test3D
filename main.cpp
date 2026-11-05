@@ -72,6 +72,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //ライト計算を無効にする
     SetUseLighting(FALSE);
 
+    //モデル
+    int playerModel;
+
+    playerModel =
+        MV1LoadModel(
+            "Assets/0Player/T-Pose.fbx"
+        );
+
     //==========================================
     //メインループ
     //×ボタンが押されるまで繰り返す
@@ -144,6 +152,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             TRUE
         );
         
+        MV1SetPosition(
+            playerModel,
+            cubePos
+        );
+
+        MV1DrawModel(
+            playerModel
+        );
+
         //用意した配列のブロックの自動描写
         for (int i = 0; i < BLOCK_NUM; i++)
         {
@@ -535,6 +552,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             playerAngle
         );
 
+        DrawFormatString(
+            10,
+            250,
+            GetColor(255, 255, 255),
+            "Model=%d",
+            playerModel
+        );
 
         /*
         DrawFormatString(
