@@ -3,6 +3,7 @@
 #include "Physics.h"
 #include "FpsControll.h"
 #include "Block.h"
+#include "Player.h"
 #include <cmath>
 
 //Windowsアプリの開始地点
@@ -26,8 +27,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     FpsControll_Initialize();
 
-    //キューブの中心座標
-    VECTOR cubePos = VGet(0, 0, 0);
+    //キューブ、プレイヤーの中心座標
+    Player player;
+    //Playerの初期化
+    player.Initialize();
 
     //ジャンプの勢い、強さ
     float jumpPower = 0.0f;
@@ -74,11 +77,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     //モデル
     int playerModel;
-
-    playerModel =
-        MV1LoadModel(
-            "Assets/0Player/T-Pose.fbx"
-        );
+    playerModel =MV1LoadModel("Assets/Player/T-Pose.mv1");
 
     //==========================================
     //メインループ
@@ -89,7 +88,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         onBlock = false;
 
         //移動前の位置を保存
-        VECTOR oldPos = cubePos;
+        VECTOR oldPos = player.pos;
 
         //前のフレームの描画を消す
         ClearDrawScreen();
@@ -108,7 +107,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //--------------------------------------
         //カメラの設定
         //--------------------------------------
-        camera.Update(cubePos);
+        camera.Update(player.pos);
        
         //--------------------------------------
         //3Dキューブを描画
@@ -134,27 +133,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //);
 
         //プレイヤー
-        DrawCube3D(
-            VGet(
-                cubePos.x - 50,
-                cubePos.y - 50,
-                cubePos.z - 50
-            ),
-
-            VGet(
-                cubePos.x + 50,
-                cubePos.y + 50,
-                cubePos.z + 50
-            ),
-
-            GetColor(0, 255, 0),
-            GetColor(255, 255, 255),
-            TRUE
-        );
+        player.Draw();
         
         MV1SetPosition(
             playerModel,
-            cubePos
+            player.pos
+        );
+
+        MV1SetRotationXYZ(
+            playerModel,
+            VGet(
+                0,
+                playerAngle + DX_PI_F,//DX_PI_Fは180°回すという意味
+                0
+            )
         );
 
         MV1DrawModel(
@@ -186,15 +178,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             playerAngle = camera.angleY;
 
             //移動先のx座標を保存
-            float oldX = cubePos.x;
+            float oldX = player.pos.x;
 
-            cubePos.x += moveX;
+            player.pos.x += moveX;
 
             bool hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
-                if (blocks[i].CheckHit(cubePos))
+                if (blocks[i].CheckHit(player.pos))
                 {
                     hit = true;
                     break;
@@ -203,19 +195,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
-                cubePos.x = oldX;
+                player.pos.x = oldX;
             }
 
             //移動先のz座標を保存
-            float oldZ = cubePos.z;
+            float oldZ = player.pos.z;
 
-            cubePos.z += moveZ;
+            player.pos.z += moveZ;
 
             hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
-                if (blocks[i].CheckHit(cubePos))
+                if (blocks[i].CheckHit(player.pos))
                 {
                     hit = true;
                     break;
@@ -224,7 +216,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
-                cubePos.z = oldZ;
+                player.pos.z = oldZ;
             }
         }
 
@@ -244,15 +236,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
             //移動先のx座標を保存
-            float oldX = cubePos.x;
+            float oldX = player.pos.x;
 
-            cubePos.x += moveX;
+            player.pos.x += moveX;
 
             bool hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
-                if (blocks[i].CheckHit(cubePos))
+                if (blocks[i].CheckHit(player.pos))
                 {
                     hit = true;
                     break;
@@ -261,19 +253,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
-                cubePos.x = oldX;
+                player.pos.x = oldX;
             }
 
             //移動先のz座標を保存
-            float oldZ = cubePos.z;
+            float oldZ = player.pos.z;
 
-            cubePos.z += moveZ;
+            player.pos.z += moveZ;
 
             hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
-                if (blocks[i].CheckHit(cubePos))
+                if (blocks[i].CheckHit(player.pos))
                 {
                     hit = true;
                     break;
@@ -282,7 +274,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
-                cubePos.z = oldZ;
+                player.pos.z = oldZ;
             }
         } 
 
@@ -301,15 +293,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             playerAngle = camera.angleY + DX_PI_F;
 
             //移動先のx座標を保存
-            float oldX = cubePos.x;
+            float oldX = player.pos.x;
 
-            cubePos.x += moveX;
+            player.pos.x += moveX;
 
             bool hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
-                if (blocks[i].CheckHit(cubePos))
+                if (blocks[i].CheckHit(player.pos))
                 {
                     hit = true;
                     break;
@@ -318,19 +310,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
-                cubePos.x = oldX;
+                player.pos.x = oldX;
             }
 
             //移動先のz座標を保存
-            float oldZ = cubePos.z;
+            float oldZ = player.pos.z;
 
-            cubePos.z += moveZ;
+            player.pos.z += moveZ;
 
             hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
-                if (blocks[i].CheckHit(cubePos))
+                if (blocks[i].CheckHit(player.pos))
                 {
                     hit = true;
                     break;
@@ -339,7 +331,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
-                cubePos.z = oldZ;
+                player.pos.z = oldZ;
             }
         }
 
@@ -358,15 +350,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             playerAngle = camera.angleY + DX_PI_F / 2.0f;
 
             //移動先のx座標を保存
-            float oldX = cubePos.x;
+            float oldX = player.pos.x;
 
-            cubePos.x += moveX;
+            player.pos.x += moveX;
 
             bool hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
-                if (blocks[i].CheckHit(cubePos))
+                if (blocks[i].CheckHit(player.pos))
                 {
                     hit = true;
                     break;
@@ -375,19 +367,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
-                cubePos.x = oldX;
+                player.pos.x = oldX;
             }
 
             //移動先のz座標を保存
-            float oldZ = cubePos.z;
+            float oldZ = player.pos.z;
 
-            cubePos.z += moveZ;
+            player.pos.z += moveZ;
 
             hit = false;
 
             for (int i = 0; i < BLOCK_NUM; i++)
             {
-                if (blocks[i].CheckHit(cubePos))
+                if (blocks[i].CheckHit(player.pos))
                 {
                     hit = true;
                     break;
@@ -396,7 +388,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (hit)
             {
-                cubePos.z = oldZ;
+                player.pos.z = oldZ;
             }
         }
 
@@ -413,9 +405,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         //ジャンプ中の処理　
         //y座標の保存
-        float oldY = cubePos.y;
+        float oldY = player.pos.y;
         //上向きの勢いで移動
-        cubePos.y += jumpPower;
+        player.pos.y += jumpPower;
 
         //ブロックに乗っていない時だけ重力
         if (onBlock == false)
@@ -425,9 +417,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
         //地面に着地したら
-        if (cubePos.y <= 0.0f)
+        if (player.pos.y <= 0.0f)
         {
-            cubePos.y = 0.0f;
+            player.pos.y = 0.0f;
 
             jumpPower = 0.0f;
 
@@ -438,12 +430,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         for (int i = 0; i < BLOCK_NUM; i++)
         {
             if (blocks[i].CheckCeiling(
-                cubePos,
+                player.pos,
                 oldY
             ))
             {
                 //ブロックの下面へ押し戻す
-                cubePos.y = blocks[i].minPos.y - 50;
+                player.pos.y = blocks[i].minPos.y - 50;
 
                 //上昇停止
                 jumpPower = 0.0f;
@@ -453,17 +445,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //右キューブ当たり判定
         //右ブロックの上にいるか
         //if (
-        //    cubePos.x + 50 > block.minPos.x &&
-        //    cubePos.x - 50 < block.maxPos.x &&
-        //    cubePos.z + 50 > block.minPos.z &&
-        //    cubePos.z - 50 < block.maxPos.z
+        //    player.pos.x + 50 > block.minPos.x &&
+        //    player.pos.x - 50 < block.maxPos.x &&
+        //    player.pos.z + 50 > block.minPos.z &&
+        //    player.pos.z - 50 < block.maxPos.z
         //    )
         //{aaaaaaaa
         //    //上から落ちてきたか
         //    if (oldY - 50 > 50 &&
-        //        cubePos.y - 50 <= 50)
+        //        player.pos.y - 50 <= 50)
         //    {
-        //        cubePos.y = 100;
+        //        player.pos.y = 100;
 
         //        jumpPower = 0.0f;
 
@@ -477,9 +469,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //iの上限かえればその分の当たり判定を管理できる
         for (int i = 0; i < BLOCK_NUM; i++)
         {
-            if (blocks[i].CheckLanding(cubePos, oldY))
+            if (blocks[i].CheckLanding(player.pos, oldY))
             {
-                cubePos.y = blocks[i].maxPos.y + 50;
+                player.pos.y = blocks[i].maxPos.y + 50;
 
                 jumpPower = 0.0f;
 
@@ -494,15 +486,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         for (int i = 0; i < BLOCK_NUM; i++)
         {
             if (
-                cubePos.x + 50 > blocks[i].minPos.x &&
-                cubePos.x - 50 < blocks[i].maxPos.x &&
-                cubePos.z + 50 > blocks[i].minPos.z &&
-                cubePos.z - 50 < blocks[i].maxPos.z &&
-                cubePos.y <= blocks[i].maxPos.y + 50 &&
-                cubePos.y >= blocks[i].maxPos.y + 45
+                player.pos.x + 50 > blocks[i].minPos.x &&
+                player.pos.x - 50 < blocks[i].maxPos.x &&
+                player.pos.z + 50 > blocks[i].minPos.z &&
+                player.pos.z - 50 < blocks[i].maxPos.z &&
+                player.pos.y <= blocks[i].maxPos.y + 50 &&
+                player.pos.y >= blocks[i].maxPos.y + 45
                 )
             {
-                cubePos.y = blocks[i].maxPos.y + 50;
+                player.pos.y = blocks[i].maxPos.y + 50;
 
                 jumpPower = 0.0f;
 
@@ -513,7 +505,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         }
 
         //ジャンプしていない時だけジャンプ開始
-        if (CheckHitKey(KEY_INPUT_SPACE) && (cubePos.y == 0.0f || onBlock))
+        if (CheckHitKey(KEY_INPUT_SPACE) && (player.pos.y == 0.0f || onBlock))
         {
             jumpPower = 13.5f;
 
@@ -522,16 +514,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         //体の向きかも
         float rotateSpeed = 0.1f;
+        float diff = targetAngle - playerAngle;
 
-        if (playerAngle < targetAngle)
+        while (diff > DX_PI_F)
         {
-            playerAngle += rotateSpeed;
+            diff -= DX_TWO_PI_F;
         }
 
-        if (playerAngle > targetAngle)
+        while (diff < -DX_PI_F)
         {
-            playerAngle -= rotateSpeed;
+            diff += DX_TWO_PI_F;
         }
+
+        playerAngle += diff * 0.2f;
+
 
         //デバッグ、座標の表示とか
         DrawFormatString(
@@ -539,9 +535,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             30,
             GetColor(255, 255, 255),
             "X=%.1f Y=%.1f Z=%.1f",
-            cubePos.x,
-            cubePos.y,
-            cubePos.z
+            player.pos.x,
+            player.pos.y,
+            player.pos.z
         );
 
         DrawFormatString(
