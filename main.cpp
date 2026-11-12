@@ -29,26 +29,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     //キューブ、プレイヤーの中心座標
     Player player;
+
     //Playerの初期化
     player.Initialize();
 
-    //ジャンプの勢い、強さ
-    float jumpPower = 0.0f;
-
-    //ジャンプ中か判定
-    bool isJump = false;
-
-    //ブロックに乗っているか判定
-    bool onBlock = false;
-
     //Cameraクラスからカメラという実体を作っている
     Camera camera;
-    
-    //プレイヤーの向き
-    float playerAngle = 0.0f;
 
-    float targetAngle = 0.0f;
-    
     //==========================================
     //配列の用意とか！
     //==========================================
@@ -72,12 +59,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     blocks[3].minPos = VGet(100, 250, 200);
     blocks[3].maxPos = VGet(200, 350, 300);
 
+
+
     //ライト計算を無効にする
     SetUseLighting(FALSE);
 
     //モデル
-    int playerModel;
-    playerModel =MV1LoadModel("Assets/Player/T-Pose.mv1");
+    player.LoadModel(
+        "Assets/Player/T-Pose.mv1"
+    );
 
     //==========================================
     //メインループ
@@ -85,7 +75,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //==========================================
     while (ProcessMessage() == 0)
     {
-        onBlock = false;
+        player.onBlock = false;
 
         //移動前の位置を保存
         VECTOR oldPos = player.pos;
@@ -108,7 +98,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //カメラの設定
         //--------------------------------------
         camera.Update(player.pos);
-       
+
         //--------------------------------------
         //3Dキューブを描画
         //--------------------------------------
@@ -134,24 +124,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         //プレイヤー
         player.Draw();
-        
-        MV1SetPosition(
-            playerModel,
-            player.pos
-        );
 
-        MV1SetRotationXYZ(
-            playerModel,
-            VGet(
-                0,
-                playerAngle + DX_PI_F,//DX_PI_Fは180°回すという意味
-                0
-            )
-        );
-
-        MV1DrawModel(
-            playerModel
-        );
+        //モデル
+        player.UpdateModelPosition();
 
         //用意した配列のブロックの自動描写
         for (int i = 0; i < BLOCK_NUM; i++)
@@ -166,7 +141,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //Wキーで前
         if (CheckHitKey(KEY_INPUT_W))
         {
-            targetAngle = camera.angleY;
 
             //X、Zの移動量
             float moveX =
@@ -175,7 +149,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             float moveZ =
                 cosf(camera.angleY) * 5.0f;
 
-            playerAngle = camera.angleY;
 
             //移動先のx座標を保存
             float oldX = player.pos.x;
@@ -223,16 +196,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //Aキーで左
         if (CheckHitKey(KEY_INPUT_A))
         {
-            targetAngle = camera.angleY - DX_PI_F / 2.0f;
-
             //X、Zの移動量
             float moveX =
                 -cosf(camera.angleY) * 5.0f;
 
             float moveZ =
                 -sinf(camera.angleY) * 5.0f;
-
-            playerAngle = camera.angleY - DX_PI_F / 2.0f;
 
 
             //移動先のx座標を保存
@@ -276,13 +245,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             {
                 player.pos.z = oldZ;
             }
-        } 
+        }
 
         //Sキーで後ろ
         if (CheckHitKey(KEY_INPUT_S))
         {
-            targetAngle = camera.angleY + DX_PI_F;
-
             //X、Zの移動量
             float moveX =
                 sinf(camera.angleY) * 5.0f;
@@ -290,7 +257,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             float moveZ =
                 -cosf(camera.angleY) * 5.0f;
 
-            playerAngle = camera.angleY + DX_PI_F;
 
             //移動先のx座標を保存
             float oldX = player.pos.x;
@@ -338,16 +304,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //Dキーで右
         if (CheckHitKey(KEY_INPUT_D))
         {
-            targetAngle = camera.angleY + DX_PI_F / 2.0f;
-
             //X、Zの移動量
             float moveX =
                 cosf(camera.angleY) * 5.0f;
 
             float moveZ =
                 sinf(camera.angleY) * 5.0f;
-
-            playerAngle = camera.angleY + DX_PI_F / 2.0f;
 
             //移動先のx座標を保存
             float oldX = player.pos.x;
@@ -397,34 +359,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             10,
             130,
             GetColor(255, 255, 255),
-            "onBlock=%d",
-            onBlock
+            "player.onBlock=%d",
+            player.onBlock
         );
 
-        
+
+
+        //11/10に追加
+        float moveDirX =
+            player.pos.x - oldPos.x;
+
+        float moveDirZ =
+            player.pos.z - oldPos.z;
+
+        if (
+            fabsf(moveDirX) > 0.01f ||
+            fabsf(moveDirZ) > 0.01f
+            )
+        {
+            player.targetAngle =
+                atan2f(
+                    moveDirX,
+                    moveDirZ
+                );
+        }
+
 
         //ジャンプ中の処理　
         //y座標の保存
         float oldY = player.pos.y;
-        //上向きの勢いで移動
-        player.pos.y += jumpPower;
 
-        //ブロックに乗っていない時だけ重力
-        if (onBlock == false)
-        {
-            jumpPower -= 0.5f;
-        }
-
-
-        //地面に着地したら
-        if (player.pos.y <= 0.0f)
-        {
-            player.pos.y = 0.0f;
-
-            jumpPower = 0.0f;
-
-            isJump = false;
-        }
+        //ジャンプの呼び出し
+        player.UpdateJump();
 
         //天井判定のこと
         for (int i = 0; i < BLOCK_NUM; i++)
@@ -438,7 +404,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                 player.pos.y = blocks[i].minPos.y - 50;
 
                 //上昇停止
-                jumpPower = 0.0f;
+                player.jumpPower = 0.0f;
             }
         }
 
@@ -457,11 +423,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //    {
         //        player.pos.y = 100;
 
-        //        jumpPower = 0.0f;
+        //        player.jumpPower = 0.0f;
 
-        //        isJump = false;
+        //        player.isJump = false;
 
-        //        onBlock = true;
+        //        player.onBlock = true;
         //    }
         //}
 
@@ -473,11 +439,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             {
                 player.pos.y = blocks[i].maxPos.y + 50;
 
-                jumpPower = 0.0f;
+                player.jumpPower = 0.0f;
 
-                onBlock = true;
+                player.onBlock = true;
 
-                isJump = false;
+                player.isJump = false;
             }
         }
 
@@ -496,37 +462,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             {
                 player.pos.y = blocks[i].maxPos.y + 50;
 
-                jumpPower = 0.0f;
+                player.jumpPower = 0.0f;
 
-                onBlock = true;
+                player.onBlock = true;
 
-                isJump = false;
+                player.isJump = false;
             }
         }
 
         //ジャンプしていない時だけジャンプ開始
-        if (CheckHitKey(KEY_INPUT_SPACE) && (player.pos.y == 0.0f || onBlock))
+        if (CheckHitKey(KEY_INPUT_SPACE) && (player.pos.y == 0.0f || player.onBlock))
         {
-            jumpPower = 13.5f;
+            player.jumpPower = 13.5f;
 
-            isJump = true;
+            player.isJump = true;
         }
 
         //体の向きかも
-        float rotateSpeed = 0.1f;
-        float diff = targetAngle - playerAngle;
+        player.UpdateRotation();
 
-        while (diff > DX_PI_F)
-        {
-            diff -= DX_TWO_PI_F;
-        }
 
-        while (diff < -DX_PI_F)
-        {
-            diff += DX_TWO_PI_F;
-        }
-
-        playerAngle += diff * 0.2f;
 
 
         //デバッグ、座標の表示とか
@@ -544,16 +499,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             10,
             190,
             GetColor(255, 255, 255),
-            "PlayerAngle=%.2f",
-            playerAngle
-        );
-
-        DrawFormatString(
-            10,
-            250,
-            GetColor(255, 255, 255),
-            "Model=%d",
-            playerModel
+            "player.playerAngle=%.2f",
+            player.playerAngle
         );
 
         /*
@@ -570,7 +517,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             70,
             GetColor(255, 255, 255),
             "jump=%.1f",
-            jumpPower
+            player.jumpPower
         );*/
 
         // --------------------------------------
