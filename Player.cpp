@@ -18,7 +18,7 @@ void Player::Draw()
         //è„
         VGet(
             pos.x + 50,
-            pos.y + 50,
+            pos.y + 130,
             pos.z + 50
         ),
         GetColor(255, 255, 255),
