@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <cmath>
 
 void Player::Initialize()
 {
@@ -103,5 +104,282 @@ void Player::UpdateJump()
         jumpPower = 0.0f;
 
         isJump = false;
+    }
+}
+
+//Wキー前移動
+void Player::MoveForward(
+    float angleY,
+    Block blocks[],
+    int blockNum
+)
+{
+    float moveX =
+        -sinf(angleY) * 5.0f;
+
+    float moveZ =
+        cosf(angleY) * 5.0f;
+
+    float oldX = pos.x;
+
+    pos.x += moveX;
+
+    bool hit = false;
+
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (blocks[i].CheckHit(pos))
+        {
+            hit = true;
+            break;
+        }
+    }
+
+    if (hit)
+    {
+        pos.x = oldX;
+    }
+
+    float oldZ = pos.z;
+
+    pos.z += moveZ;
+
+    hit = false;
+
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (blocks[i].CheckHit(pos))
+        {
+            hit = true;
+            break;
+        }
+    }
+
+    if (hit)
+    {
+        pos.z = oldZ;
+    }
+}
+
+//Sキー後ろ移動
+void Player::MoveBack(
+    float angleY,
+    Block blocks[],
+    int blockNum
+)
+{
+    //X、Zの移動量
+    float moveX =
+        sinf(angleY) * 5.0f;
+
+    float moveZ =
+        -cosf(angleY) * 5.0f;
+
+    //移動先のx座標を保存
+    float oldX = pos.x;
+
+    pos.x += moveX;
+
+    bool hit = false;
+
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (blocks[i].CheckHit(pos))
+        {
+            hit = true;
+            break;
+        }
+    }
+
+    if (hit)
+    {
+        pos.x = oldX;
+    }
+
+    //移動先のz座標を保存
+    float oldZ = pos.z;
+
+    pos.z += moveZ;
+
+    hit = false;
+
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (blocks[i].CheckHit(pos))
+        {
+            hit = true;
+            break;
+        }
+    }
+
+    if (hit)
+    {
+        pos.z = oldZ;
+    }
+}
+
+//Aキー左移動
+void Player::MoveLeft(
+    float angleY,
+    Block blocks[],
+    int blockNum
+)
+{
+    float moveX =
+        -cosf(angleY) * 5.0f;
+
+    float moveZ =
+        -sinf(angleY) * 5.0f;
+
+    //移動先のx座標を保存
+    float oldX = pos.x;
+
+    pos.x += moveX;
+
+    bool hit = false;
+
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (blocks[i].CheckHit(pos))
+        {
+            hit = true;
+            break;
+        }
+    }
+
+    if (hit)
+    {
+        pos.x = oldX;
+    }
+
+    //移動先のz座標を保存
+    float oldZ = pos.z;
+
+    pos.z += moveZ;
+
+    hit = false;
+
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (blocks[i].CheckHit(pos))
+        {
+            hit = true;
+            break;
+        }
+    }
+
+    if (hit)
+    {
+        pos.z = oldZ;
+    }
+}
+
+//Dキー右移動
+void Player::MoveRight(
+    float angleY,
+    Block blocks[],
+    int blockNum
+)
+{
+    float moveX =
+        cosf(angleY) * 5.0f;
+
+    float moveZ =
+        sinf(angleY) * 5.0f;
+
+    //移動先のx座標を保存
+    float oldX = pos.x;
+
+    pos.x += moveX;
+
+    bool hit = false;
+
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (blocks[i].CheckHit(pos))
+        {
+            hit = true;
+            break;
+        }
+    }
+
+    if (hit)
+    {
+        pos.x = oldX;
+    }
+
+    //移動先のz座標を保存
+    float oldZ = pos.z;
+
+    pos.z += moveZ;
+
+    hit = false;
+
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (blocks[i].CheckHit(pos))
+        {
+            hit = true;
+            break;
+        }
+    }
+
+    if (hit)
+    {
+        pos.z = oldZ;
+    }
+}
+
+//天井判定
+void Player::CheckCeiling(
+    Block blocks[],
+    int blockNum,
+    float oldY
+)
+{
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (
+            blocks[i].CheckCeiling(
+                pos,
+                oldY
+            )
+            )
+        {
+            //ブロックの下面へ押し戻す
+            pos.y =
+                blocks[i].minPos.y - 50;
+
+            //上昇停止
+            jumpPower = 0.0f;
+        }
+    }
+}
+
+//ブロックの上に立ってる判定
+void Player::CheckLanding(
+    Block blocks[],
+    int blockNum,
+    float oldY
+)
+{
+    for (int i = 0; i < blockNum; i++)
+    {
+        if (
+            blocks[i].CheckLanding(
+                pos,
+                oldY
+            )
+            )
+        {
+            pos.y =
+                blocks[i].maxPos.y + 50;
+
+            jumpPower = 0.0f;
+
+            onBlock = true;
+
+            isJump = false;
+        }
     }
 }

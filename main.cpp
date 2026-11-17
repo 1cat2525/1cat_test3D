@@ -13,7 +13,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //TRUE = フルスクリーンではなくウィンドウ表示
     //FALSE = フルスクリーン表示
     ChangeWindowMode(TRUE);
-
+    
     // DXライブラリの初期化
     // 失敗したら終了
     if (DxLib_Init() == -1)
@@ -58,8 +58,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //4個目
     blocks[3].minPos = VGet(100, 250, 200);
     blocks[3].maxPos = VGet(200, 350, 300);
-
-
 
     //ライト計算を無効にする
     SetUseLighting(FALSE);
@@ -134,224 +132,47 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             blocks[i].Draw();
         }
 
-
         //--------------------------------------
         //キー入力と移動
         //--------------------------------------
         //Wキーで前
         if (CheckHitKey(KEY_INPUT_W))
         {
-
-            //X、Zの移動量
-            float moveX =
-                -sinf(camera.angleY) * 5.0f;
-
-            float moveZ =
-                cosf(camera.angleY) * 5.0f;
-
-
-            //移動先のx座標を保存
-            float oldX = player.pos.x;
-
-            player.pos.x += moveX;
-
-            bool hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(player.pos))
-                {
-                    hit = true;
-                    break;
-                }
-            }
-
-            if (hit)
-            {
-                player.pos.x = oldX;
-            }
-
-            //移動先のz座標を保存
-            float oldZ = player.pos.z;
-
-            player.pos.z += moveZ;
-
-            hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(player.pos))
-                {
-                    hit = true;
-                    break;
-                }
-            }
-
-            if (hit)
-            {
-                player.pos.z = oldZ;
-            }
+            player.MoveForward(
+                camera.angleY,
+                blocks,
+                BLOCK_NUM
+            );
         }
 
         //Aキーで左
         if (CheckHitKey(KEY_INPUT_A))
         {
-            //X、Zの移動量
-            float moveX =
-                -cosf(camera.angleY) * 5.0f;
-
-            float moveZ =
-                -sinf(camera.angleY) * 5.0f;
-
-
-            //移動先のx座標を保存
-            float oldX = player.pos.x;
-
-            player.pos.x += moveX;
-
-            bool hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(player.pos))
-                {
-                    hit = true;
-                    break;
-                }
-            }
-
-            if (hit)
-            {
-                player.pos.x = oldX;
-            }
-
-            //移動先のz座標を保存
-            float oldZ = player.pos.z;
-
-            player.pos.z += moveZ;
-
-            hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(player.pos))
-                {
-                    hit = true;
-                    break;
-                }
-            }
-
-            if (hit)
-            {
-                player.pos.z = oldZ;
-            }
+            player.MoveLeft(
+                camera.angleY,
+                blocks,
+                BLOCK_NUM
+            );
         }
 
         //Sキーで後ろ
         if (CheckHitKey(KEY_INPUT_S))
         {
-            //X、Zの移動量
-            float moveX =
-                sinf(camera.angleY) * 5.0f;
-
-            float moveZ =
-                -cosf(camera.angleY) * 5.0f;
-
-
-            //移動先のx座標を保存
-            float oldX = player.pos.x;
-
-            player.pos.x += moveX;
-
-            bool hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(player.pos))
-                {
-                    hit = true;
-                    break;
-                }
-            }
-
-            if (hit)
-            {
-                player.pos.x = oldX;
-            }
-
-            //移動先のz座標を保存
-            float oldZ = player.pos.z;
-
-            player.pos.z += moveZ;
-
-            hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(player.pos))
-                {
-                    hit = true;
-                    break;
-                }
-            }
-
-            if (hit)
-            {
-                player.pos.z = oldZ;
-            }
+            player.MoveBack(
+                camera.angleY,
+                blocks,
+                BLOCK_NUM
+            );
         }
 
         //Dキーで右
         if (CheckHitKey(KEY_INPUT_D))
         {
-            //X、Zの移動量
-            float moveX =
-                cosf(camera.angleY) * 5.0f;
-
-            float moveZ =
-                sinf(camera.angleY) * 5.0f;
-
-            //移動先のx座標を保存
-            float oldX = player.pos.x;
-
-            player.pos.x += moveX;
-
-            bool hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(player.pos))
-                {
-                    hit = true;
-                    break;
-                }
-            }
-
-            if (hit)
-            {
-                player.pos.x = oldX;
-            }
-
-            //移動先のz座標を保存
-            float oldZ = player.pos.z;
-
-            player.pos.z += moveZ;
-
-            hit = false;
-
-            for (int i = 0; i < BLOCK_NUM; i++)
-            {
-                if (blocks[i].CheckHit(player.pos))
-                {
-                    hit = true;
-                    break;
-                }
-            }
-
-            if (hit)
-            {
-                player.pos.z = oldZ;
-            }
+            player.MoveRight(
+                camera.angleY,
+                blocks,
+                BLOCK_NUM
+            );
         }
 
         //デバッグ
@@ -362,8 +183,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             "player.onBlock=%d",
             player.onBlock
         );
-
-
 
         //11/10に追加
         float moveDirX =
@@ -384,7 +203,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                 );
         }
 
-
         //ジャンプ中の処理　
         //y座標の保存
         float oldY = player.pos.y;
@@ -392,21 +210,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //ジャンプの呼び出し
         player.UpdateJump();
 
-        //天井判定のこと
-        for (int i = 0; i < BLOCK_NUM; i++)
-        {
-            if (blocks[i].CheckCeiling(
-                player.pos,
-                oldY
-            ))
-            {
-                //ブロックの下面へ押し戻す
-                player.pos.y = blocks[i].minPos.y - 50;
-
-                //上昇停止
-                player.jumpPower = 0.0f;
-            }
-        }
+        //天井判定
+        player.CheckCeiling(
+            blocks,
+            BLOCK_NUM,
+            oldY
+        );
 
         //右キューブ当たり判定
         //右ブロックの上にいるか
@@ -432,20 +241,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //}
 
         //ブロックの上に立っている
-        //iの上限かえればその分の当たり判定を管理できる
-        for (int i = 0; i < BLOCK_NUM; i++)
-        {
-            if (blocks[i].CheckLanding(player.pos, oldY))
-            {
-                player.pos.y = blocks[i].maxPos.y + 50;
-
-                player.jumpPower = 0.0f;
-
-                player.onBlock = true;
-
-                player.isJump = false;
-            }
-        }
+        player.CheckLanding(
+            blocks,
+            BLOCK_NUM,
+            oldY
+        );
 
         //ブロックの上に立っている判定。
         //ブロックの上に乗ってもすり抜けない
@@ -480,9 +280,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         //体の向きかも
         player.UpdateRotation();
-
-
-
 
         //デバッグ、座標の表示とか
         DrawFormatString(
