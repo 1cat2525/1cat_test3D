@@ -75,6 +75,9 @@ public:
         int blockNum
     );
 
+    //ƒWƒƒƒ“ƒv
+    void Jump();
+
     void CheckLanding(
         Block blocks[],
         int blockNum,

@@ -271,11 +271,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         }
 
         //ジャンプしていない時だけジャンプ開始
-        if (CheckHitKey(KEY_INPUT_SPACE) && (player.pos.y == 0.0f || player.onBlock))
+        if (CheckHitKey(KEY_INPUT_SPACE))
         {
-            player.jumpPower = 13.5f;
-
-            player.isJump = true;
+            player.Jump();
         }
 
         //体の向きかも

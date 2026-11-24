@@ -330,6 +330,17 @@ void Player::MoveRight(
     }
 }
 
+//ƒWƒƒƒ“ƒv
+void Player::Jump()
+{
+    if (pos.y == 0.0f || onBlock)
+    {
+        jumpPower = 13.5f;
+
+        isJump = true;
+    }
+}
+
 //“Vˆä”»’è
 void Player::CheckCeiling(
     Block blocks[],
