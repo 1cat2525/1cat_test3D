@@ -8,13 +8,14 @@ void Block::Draw()
         maxPos,
         GetColor(0, 255, 0),
         GetColor(255, 255, 255),
-        FALSE
+        TRUE
     );
 }
 
 bool Block::CheckHit(VECTOR playerPos)
 {
     //プレイヤーの頭と下
+    //判定ここ変えたら行けたわ
     float playerTop = playerPos.y + 50;
     float playerBottom = playerPos.y - 50;
 
