@@ -21,6 +21,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         return -1;
     }
 
+    // Zバッファ使用
+    SetUseZBuffer3D(TRUE);
+
+    // Zバッファ書き込み
+    SetWriteZBuffer3D(TRUE);
+
     SetMouseDispFlag(FALSE);
 
     SetMousePoint(640, 360);
@@ -120,9 +126,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //    TRUE
         //);
 
-        //プレイヤー
-        player.Draw();
-
         //モデル
         player.UpdateModelPosition();
 
@@ -131,6 +134,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         {
             blocks[i].Draw();
         }
+
+        //プレイヤー
+        player.Draw();
 
         //--------------------------------------
         //キー入力と移動

@@ -9,23 +9,23 @@ void Player::Initialize()
 //キューブの位置
 void Player::Draw()
 {
-    DrawCube3D(
-        //下
-        VGet(
-            pos.x - 50,
-            pos.y - 50,
-            pos.z - 50
-        ),
-        //上
-        VGet(
-            pos.x + 50,
-            pos.y + 130,
-            pos.z + 50
-        ),
-        GetColor(255, 255, 255),
-        GetColor(255, 255, 255),
-        FALSE
-    );
+    //DrawCube3D(
+    //    //下
+    //    VGet(
+    //        pos.x - 50,
+    //        pos.y - 50,
+    //        pos.z - 50
+    //    ),
+    //    //上
+    //    VGet(
+    //        pos.x + 50,
+    //        pos.y + 130,
+    //        pos.z + 50
+    //    ),
+    //    GetColor(255, 255, 255),
+    //    GetColor(255, 255, 255),
+    //    FALSE
+    //);
 
     //ここから下モデル
     MV1SetPosition(
