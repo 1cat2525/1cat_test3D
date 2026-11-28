@@ -16,7 +16,7 @@ bool Block::CheckHit(VECTOR playerPos)
 {
     //プレイヤーの頭と下
     //判定ここ変えたら行けたわ
-    float playerTop = playerPos.y + 50;
+    float playerTop = playerPos.y + 130;
     float playerBottom = playerPos.y - 50;
 
     if (
@@ -62,8 +62,8 @@ bool Block::CheckCeiling(VECTOR playerPos,float oldY)
         playerPos.x - 49.9 < maxPos.x &&
         playerPos.z + 49.9 > minPos.z &&
         playerPos.z - 49.9 < maxPos.z &&
-        oldY + 49.9 < blockBottom &&
-        playerPos.y + 49.9 >= blockBottom
+        oldY + 129.9 < blockBottom &&
+        playerPos.y + 129.9 >= blockBottom
         )
     {
         return true;

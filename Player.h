@@ -78,15 +78,20 @@ public:
     //ジャンプ
     void Jump();
 
+    //上からブロックに乗ったか？
     void CheckLanding(
         Block blocks[],
         int blockNum,
         float oldY
     );
 
+    //下から頭をぶつけたか？
     void CheckCeiling(
         Block blocks[],
         int blockNum,
         float oldY
     );
+
+    //モデル読み込み？
+    int GetModelHandle() const;
 };

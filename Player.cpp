@@ -9,23 +9,24 @@ void Player::Initialize()
 //キューブの位置
 void Player::Draw()
 {
-    //DrawCube3D(
-    //    //下
-    //    VGet(
-    //        pos.x - 50,
-    //        pos.y - 50,
-    //        pos.z - 50
-    //    ),
-    //    //上
-    //    VGet(
-    //        pos.x + 50,
-    //        pos.y + 130,
-    //        pos.z + 50
-    //    ),
-    //    GetColor(255, 255, 255),
-    //    GetColor(255, 255, 255),
-    //    FALSE
-    //);
+    //当たり判定の可視化
+    DrawCube3D(
+        //下
+        VGet(
+            pos.x - 50,
+            pos.y - 50,
+            pos.z - 50
+        ),
+        //上
+        VGet(
+            pos.x + 50,
+            pos.y + 130,
+            pos.z + 50
+        ),
+        GetColor(255, 255, 255),
+        GetColor(255, 255, 255),
+        FALSE
+    );
 
     //ここから下モデル
     MV1SetPosition(
@@ -358,8 +359,7 @@ void Player::CheckCeiling(
             )
         {
             //ブロックの下面へ押し戻す
-            pos.y =
-                blocks[i].minPos.y - 50;
+            pos.y = blocks[i].minPos.y - 130;
 
             //上昇停止
             jumpPower = 0.0f;
@@ -393,4 +393,10 @@ void Player::CheckLanding(
             isJump = false;
         }
     }
+}
+
+//モデル読み込み？
+int Player::GetModelHandle() const
+{
+    return modelHandle;
 }

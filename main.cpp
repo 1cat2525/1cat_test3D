@@ -73,6 +73,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         "Assets/Player/T-Pose.mv1"
     );
 
+    //アイドル状態モデル
+    int idleAnim =
+        MV1LoadModel(
+            "Assets/Player/idle.mv1"
+        );
+
+    int idleAttach =
+        MV1AttachAnim(
+            player.GetModelHandle(),
+            0,
+            idleAnim,
+            FALSE
+        );
+
+    //時間リセット
+    float animTime = 0.0f;
+
     //==========================================
     //メインループ
     //×ボタンが押されるまで繰り返す
@@ -137,6 +154,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         //プレイヤー
         player.Draw();
+
+        //--------------------------------------
+        //モデル読み込み？
+        //--------------------------------------
+        animTime += 0.1f;
+
+        MV1SetAttachAnimTime(
+            player.GetModelHandle(),
+            idleAttach,
+            animTime
+        );
 
         //--------------------------------------
         //キー入力と移動
